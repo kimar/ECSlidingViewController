@@ -103,6 +103,7 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     self.shouldAllowUserInteractionsWhenAnchored = NO;
     self.shouldAddPanGestureRecognizerToTopViewSnapshot = NO;
     self.shouldAdjustChildViewHeightForStatusBar = NO;
+    self.shouldMoveStatusBarWithTopViewController = YES;
     self.resetTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetTopView)];
     _panGesture          = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(updateTopViewHorizontalCenterWithRecognizer:)];
     self.resetTapGesture.enabled = NO;
@@ -466,13 +467,15 @@ NSString *const ECSlidingViewTopDidReset             = @"ECSlidingViewTopDidRese
     self.topView.layer.position = center;
     self.topViewSnapshot.frame = self.topView.frame;
     
-    NSString *key = [[NSString alloc] initWithData:[NSData dataWithBytes:(unsigned char []){0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x42, 0x61, 0x72} length:9] encoding:NSASCIIStringEncoding];
-    id object = [UIApplication sharedApplication];
-    UIView *statusBar;
-    if ([object respondsToSelector:NSSelectorFromString(key)]) {
-        statusBar = [object valueForKey:key];
+    if (self.shouldMoveStatusBarWithTopViewController) {
+        NSString *key = [[NSString alloc] initWithData:[NSData dataWithBytes:(unsigned char []){0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x42, 0x61, 0x72} length:9] encoding:NSASCIIStringEncoding];
+        id object = [UIApplication sharedApplication];
+        UIView *statusBar;
+        if ([object respondsToSelector:NSSelectorFromString(key)]) {
+            statusBar = [object valueForKey:key];
+        }
+        statusBar.transform = CGAffineTransformMakeTranslation(self.topView.frame.origin.x, self.topView.frame.origin.y);
     }
-    statusBar.transform = CGAffineTransformMakeTranslation(self.topView.frame.origin.x, self.topView.frame.origin.y);
     
     if (self.topViewCenterMoved) self.topViewCenterMoved(newHorizontalCenter);
 }

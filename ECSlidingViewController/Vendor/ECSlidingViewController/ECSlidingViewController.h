@@ -145,6 +145,12 @@ typedef enum {
  */
 @property (nonatomic, assign) BOOL shouldAdjustChildViewHeightForStatusBar;
 
+/** Specifies if the UIStatusBar should move along with the topViewController
+ 
+ By default, this is set to YES
+ */
+@property (nonatomic, assign) BOOL shouldMoveStatusBarWithTopViewController;
+
 /** Specifies the behavior for the under left width
 
  By default, this is set to ECFullWidth
